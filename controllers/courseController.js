@@ -3,7 +3,7 @@ import Course from '../models/Course.js';
 // Get all courses
 export const getCourses = async (req, res) => {
   try {
-    const courses = await Course.find();
+    const courses = await Course.find().sort({ order: 1 });
     res.status(200).json(courses);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -13,7 +13,8 @@ export const getCourses = async (req, res) => {
 // Create a new course
 export const createCourse = async (req, res) => {
   try {
-    const newCourse = new Course(req.body);
+    const courseCount = await Course.countDocuments();
+    const newCourse = new Course({ ...req.body, order: courseCount });
     await newCourse.save();
     res.status(201).json(newCourse);
   } catch (error) {
@@ -52,6 +53,23 @@ export const updateCourse = async (req, res) => {
     }
     
     res.status(200).json(updatedCourse);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Reorder courses
+export const reorderCourses = async (req, res) => {
+  const { updates } = req.body; // Expects an array of { id, order }
+
+  try {
+    const updatePromises = updates.map((update) =>
+      Course.findByIdAndUpdate(update.id, { order: update.order })
+    );
+
+    await Promise.all(updatePromises);
+    
+    res.status(200).json({ message: 'Courses reordered successfully' });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

@@ -3,6 +3,8 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import courseRoutes from './routes/courses.js';
+import instructorRoutes from './routes/instructorRoutes.js';
+import contactRoutes from './routes/contactRoutes.js';
 
 dotenv.config();
 
@@ -15,6 +17,8 @@ app.use(express.json());
 
 // Routes
 app.use('/api/courses', courseRoutes);
+app.use('/api/instructors', instructorRoutes);
+app.use('/api/contacts', contactRoutes);
 
 // Test Route
 app.get('/', (req, res) => {
