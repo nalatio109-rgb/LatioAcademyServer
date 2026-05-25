@@ -25,15 +25,17 @@ app.get('/', (req, res) => {
   res.send('LatioAcademyserver API is running...');
 });
 
-// Connect to MongoDB
+// Start server first so Railway health checks pass immediately
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
+
+// Connect to MongoDB asynchronously
 mongoose
   .connect(process.env.MONGODB_URI)
   .then(() => {
     console.log('Connected to MongoDB Atlas');
-    app.listen(PORT, () => {
-      console.log(`Server is running on port ${PORT}`);
-    });
   })
   .catch((error) => {
-    console.error('Error connecting to MongoDB:', error.message);
+    console.error('Error connecting to MongoDB. Make sure MONGODB_URI is set and IP is whitelisted:', error.message);
   });
