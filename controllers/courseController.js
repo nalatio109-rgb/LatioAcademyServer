@@ -13,8 +13,11 @@ export const getCourses = async (req, res) => {
 // Create a new course
 export const createCourse = async (req, res) => {
   try {
-    const courseCount = await Course.countDocuments();
-    const newCourse = new Course({ ...req.body, order: courseCount });
+    // Find the course with the highest order
+    const lastCourse = await Course.findOne().sort('-order');
+    const nextOrder = lastCourse ? lastCourse.order + 1 : 0;
+    
+    const newCourse = new Course({ ...req.body, order: nextOrder });
     await newCourse.save();
     res.status(201).json(newCourse);
   } catch (error) {
