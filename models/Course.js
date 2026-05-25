@@ -7,6 +7,7 @@ const courseSchema = new mongoose.Schema({
   instructor: { type: String, required: true },
   price: { type: Number, required: true, default: 0 },
   order: { type: Number, default: 0 },
+  showInNavbar: { type: Boolean, default: false },
   
   // Tag và tiêu đề phụ
   tagType: { type: String, default: "KHÓA HỌC CHUYÊN MÔN" },
